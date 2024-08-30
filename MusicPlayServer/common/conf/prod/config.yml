@@ -1,0 +1,7 @@
+env: release
+
+log:
+  output: /data/logs
+
+mysql:
+  datasource: root:root/root

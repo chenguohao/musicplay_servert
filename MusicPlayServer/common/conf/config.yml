@@ -1,0 +1,19 @@
+env: debug
+
+log:
+  output: /data/logs
+
+mysql:
+#  host: 216.118.224.170:3306
+#  datasource: root1:Admin0000@(216.118.224.170:3306)/new_da_fu_game
+
+#  host: 182.16.36.98:3306
+#  datasource: new_da_fu_game:new_da_fu_game@(182.16.36.98:3306)/new_da_fu_game
+
+#  host: 13.212.203.17:3306
+#  datasource: kftv:kftv2022@(13.212.203.17:3306)/KFTV
+
+  host: 127.0.0.1:3306
+  datasource: root:overlord@(127.0.0.1:3306)/musicplay
+fileServer:
+  host: 127.0.0.1:8081

@@ -1,0 +1,8 @@
+env: test
+
+log:
+  output: /data/logs
+
+mysql:
+  host: rm-wz9sl9h5w2j738rstno.mysql.rds.aliyuncs.com:3306
+  datasource: new_da_fu_game:new_da_fu_game_888@(rm-wz9sl9h5w2j738rstno.mysql.rds.aliyuncs.com:3306)/new_da_fu_game
