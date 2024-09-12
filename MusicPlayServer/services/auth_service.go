@@ -32,3 +32,9 @@ func RegisterOrLogin(req AppleLoginRequest) dao.UserModel {
 
 	return newUser
 }
+
+type ProfileRequest struct {
+	UserID int    `json:"userID" binding:"required"`
+	Avatar string `json:"avatar"`
+	Name   string `json:"name"`
+}

@@ -53,9 +53,22 @@ func GetUserCount() (int64, error) {
 
 // 更新用户信息
 func UpdateUserByUID(uid int, updatedUser UserModel) error {
-	err := DBClient.Model(&UserModel{}).Where("uid = ?", uid).Updates(updatedUser).Error
+
+	err := DBClient.Model(&UserModel{}).
+		Where("uid = ?", uid).
+		Select("name", "avatar"). // 只选择更新 name 和 avatar 字段
+		Updates(map[string]interface{}{
+			"name":   updatedUser.Name,
+			"avatar": updatedUser.Avatar,
+		}).Error
 	if err != nil {
 		return err
 	}
 	return nil
+
+	//err := DBClient.Model(&UserModel{}).Where("uid = ?", uid).Updates(updatedUser).Error
+	//if err != nil {
+	//	return err
+	//}
+	//return nil
 }

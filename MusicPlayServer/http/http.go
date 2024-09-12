@@ -30,6 +30,8 @@ func StartHttpServer() {
 		v1group.POST("/appleSign", AuthWithApple)
 		v1group.POST("/createPlaylist", CreatePlayList)
 		v1group.GET("/getPlaylist", GetPlaylist)
+		v1group.POST("/updateProfile", ReqestUpdateProfile)
+
 	}
 
 	router.Run(":8011")

@@ -78,3 +78,22 @@ func AuthWithApple(c *gin.Context) {
 		"code":    0,
 	})
 }
+
+func ReqestUpdateProfile(c *gin.Context) {
+	var req ProfileRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error(), "code": 1001})
+		return
+	}
+
+	if err := UpdateProfile(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error(), "code": 1001})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Authentication successful",
+		"data":    "",
+		"code":    0,
+	})
+}

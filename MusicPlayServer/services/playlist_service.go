@@ -9,7 +9,7 @@ import (
 
 type CreatePlaylistRequest struct {
 	Title    string        `json:"title" binding:"required"`
-	CoverURL string        `json:"cover" binding:"required"`
+	CoverURL string        `json:"cover"`
 	ListItem []interface{} `json:"playlist" binding:"required"` // 假设这是一个数组，可以根据实际情况调整类型
 	OwnerID  int           `json:"ownerID" binding:"required"`
 }
