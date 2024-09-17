@@ -75,3 +75,12 @@ func UpdatePlaylist(req UpdatePlaylistRequest) error {
 func DeletePlaylist(req DeletePlaylistRequest) error {
 	return dao.DeletePlaylistByID(req.PlaylistID)
 }
+
+type AddPlayCountRequest struct { // 假设这是一个数组，可以根据实际情况调整类型
+	PlaylistID int64 `json:"target_id" binding:"required"`
+}
+
+func AddPlayCount(req AddPlayCountRequest, curUserID int64) (bool, error) {
+	play := dao.PlayCountModel{}
+	return play.Add(curUserID, req.PlaylistID)
+}

@@ -36,7 +36,7 @@ func InitDB(cfg *config.Config) (*gorm.DB, error) {
 	}), &gorm.Config{})
 
 	//db.AutoMigrate(&TUser{}, &Post{})
-	db.AutoMigrate(&LikeCountModel{})
+	db.AutoMigrate(&PlayCountModel{})
 	if err != nil {
 		panic("failed to connect database")
 	}

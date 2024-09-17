@@ -177,3 +177,34 @@ func RequestLike(c *gin.Context) {
 		"code":    0,
 	})
 }
+
+func RequestAddPlayCount(c *gin.Context) {
+	var req AddPlayCountRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error(), "code": 1001})
+		return
+	}
+
+	userIDHeader := c.GetHeader("X-User-ID")
+
+	// 如果 userIDHeader 为空，返回错误
+	if userIDHeader == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID not found in header"})
+		return
+	}
+
+	curUID, _ := strconv.Atoi(userIDHeader)
+
+	if isAdd, err := AddPlayCount(req, int64(curUID)); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error(), "code": 1001})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Authentication successful",
+			"data":    map[string]interface{}{"isAdd": isAdd},
+			"code":    0,
+		})
+		return
+	}
+
+}
