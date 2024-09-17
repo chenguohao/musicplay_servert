@@ -13,10 +13,8 @@ import (
 var DBClient *gorm.DB
 
 type Model struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time `sql:"index"`
+	Id        uint      `gorm:"primary_key"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func InitDB(cfg *config.Config) (*gorm.DB, error) {
@@ -34,7 +32,11 @@ func InitDB(cfg *config.Config) (*gorm.DB, error) {
 		DontSupportRenameIndex:    true,       // 重命名索引时采用删除并新建的方式，MySQL 5.7 之前的数据库和 MariaDB 不支持重命名索引
 		DontSupportRenameColumn:   true,       // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false,      // 根据当前 MySQL 版本自动配置
+
 	}), &gorm.Config{})
+
+	//db.AutoMigrate(&TUser{}, &Post{})
+	db.AutoMigrate(&LikeCountModel{})
 	if err != nil {
 		panic("failed to connect database")
 	}

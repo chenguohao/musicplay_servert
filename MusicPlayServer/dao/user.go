@@ -1,7 +1,9 @@
 package dao
 
+import "gorm.io/gorm"
+
 type UserModel struct {
-	Id          int    `json:"id"`
+	gorm.Model
 	Name        string `json:"name"`
 	Uid         int    `json:"uid"`
 	Avatar      string `json:"avatar"`
@@ -11,6 +13,16 @@ type UserModel struct {
 }
 
 func (UserModel) TableName() string {
+	return "user"
+}
+
+type SimpleUserModel struct {
+	Name   string `json:"name"`
+	Uid    int    `json:"uid"`
+	Avatar string `json:"avatar"`
+}
+
+func (SimpleUserModel) TableName() string {
 	return "user"
 }
 

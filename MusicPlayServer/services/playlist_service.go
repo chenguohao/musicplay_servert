@@ -9,9 +9,13 @@ import (
 
 type CreatePlaylistRequest struct {
 	Title    string        `json:"title" binding:"required"`
-	CoverURL string        `json:"cover"`
-	ListItem []interface{} `json:"playlist" binding:"required"` // 假设这是一个数组，可以根据实际情况调整类型
-	OwnerID  int           `json:"ownerID" binding:"required"`
+	CoverURL string        `json:"cover_url"`
+	ListItem []interface{} `json:"list_item" binding:"required"` // 假设这是一个数组，可以根据实际情况调整类型
+	OwnerID  int64         `json:"owner_id" binding:"required"`
+}
+
+type DeletePlaylistRequest struct {
+	PlaylistID int64 `json:"playlistID" binding:"required"`
 }
 
 func CreatePlaylist(req CreatePlaylistRequest) error {
@@ -19,7 +23,7 @@ func CreatePlaylist(req CreatePlaylistRequest) error {
 	playlist := dao.PlaylistModel{}
 
 	playlist.Title = req.Title
-
+	playlist.OwnerID = req.OwnerID
 	playlist.CoverURL = req.CoverURL
 	listItemJSON, err := json.Marshal(req.ListItem)
 	if err != nil {
@@ -45,6 +49,29 @@ type GetPlaylistRequest struct {
 	Size int `json:"size" binding:"required"`
 }
 
-func GetPlayList(page int, size int) ([]dao.PlaylistModel, error) {
-	return dao.GetPlaylistsByPage(page, size)
+func GetPlayList(page int, size int, curUid int64) ([]dao.PlaylistModelWithUser, error) {
+	dao.GetAll()
+	return dao.GetPlaylistsByPage(page, size, curUid)
+}
+
+type UpdatePlaylistRequest struct {
+	Title      string        `json:"title" binding:"required"`
+	CoverURL   string        `json:"cover"`
+	ListItem   []interface{} `json:"playlist" binding:"required"` // 假设这是一个数组，可以根据实际情况调整类型
+	PlaylistID int64         `json:"playlistID" binding:"required"`
+}
+
+func UpdatePlaylist(req UpdatePlaylistRequest) error {
+	playlist := dao.PlaylistModel{}
+
+	playlist.Title = req.Title
+
+	playlist.CoverURL = req.CoverURL
+	listItemJSON, _ := json.Marshal(req.ListItem)
+	playlist.ListItem = listItemJSON
+	return dao.UpdatePlaylistByID(req.PlaylistID, playlist)
+}
+
+func DeletePlaylist(req DeletePlaylistRequest) error {
+	return dao.DeletePlaylistByID(req.PlaylistID)
 }

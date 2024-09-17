@@ -1,9 +1,11 @@
 package dao
 
-import "github.com/goccy/go-json"
+import (
+	"github.com/goccy/go-json"
+)
 
 type PlaylistModel struct {
-	ID         int64           `json:"id"`
+	Model
 	Title      string          `json:"title"`
 	PlaylistID int64           `json:"playlist_id"`
 	CoverURL   string          `json:"cover_url"`
@@ -24,8 +26,45 @@ func AddPlaylist(playlist PlaylistModel) error {
 	return nil
 }
 
+type PlaylistModelWithUser struct {
+	//gorm.Model
+	PlaylistModel
+	Owner     SimpleUserModel `gorm:"foreignKey:OwnerID;references:Uid"` // 指定 OwnerID 对应 UserModel 的 Id
+	LikeCount int             `json:"like_count"`
+	PlayCount int             `json:"play_count"`
+	IsLiked   bool            `json:"is_liked"`
+}
+
+func (PlaylistModelWithUser) TableName() string {
+	return "playlist"
+}
+func GetPlaylistsByPage(page int, pageSize int, currentUserID int64) ([]PlaylistModelWithUser, error) {
+	var playlists []PlaylistModelWithUser
+
+	offset := (page - 1) * pageSize
+	if offset < 0 {
+		offset = 0
+	}
+
+	err := DBClient.Preload("Owner").
+		//Find(&playlists).
+		Select("playlist.*, "+
+			"(SELECT COUNT(*) FROM likecount WHERE likecount.target = playlist.playlist_id and likecount.is_enable != 0 ) as like_count,"+
+			"(SELECT COUNT(*) FROM playcount WHERE playcount.target = playlist.playlist_id) as play_count,"+
+			"(SELECT COUNT(*) > 0 FROM likecount WHERE likecount.target = playlist.playlist_id AND likecount.sender = ? AND likecount.is_enable != 0) as is_liked", currentUserID). // 判断当前用户是否点赞 ).
+		Offset(offset).
+		Limit(pageSize).
+		Find(&playlists).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return playlists, nil
+}
+
 // GetPlaylistsByPage retrieves playlists with pagination
-func GetPlaylistsByPage(page int, pageSize int) ([]PlaylistModel, error) {
+func GetPlaylistsByPage2(page int, pageSize int) ([]PlaylistModel, error) {
 	var playlists []PlaylistModel
 	offset := (page - 1) * pageSize
 	if offset < 0 {
@@ -40,7 +79,12 @@ func GetPlaylistsByPage(page int, pageSize int) ([]PlaylistModel, error) {
 
 // UpdatePlaylistByID updates a playlist by its ID
 func UpdatePlaylistByID(id int64, updatedPlaylist PlaylistModel) error {
-	err := DBClient.Model(&PlaylistModel{}).Where("id = ?", id).Updates(updatedPlaylist).Error
+	// 指定允许更新的字段
+	err := DBClient.Model(&PlaylistModel{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"title":     updatedPlaylist.Title,
+		"cover_url": updatedPlaylist.CoverURL,
+		"list_item": updatedPlaylist.ListItem,
+	}).Error
 	if err != nil {
 		return err
 	}

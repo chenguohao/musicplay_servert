@@ -14,6 +14,6 @@ mysql:
 #  datasource: kftv:kftv2022@(13.212.203.17:3306)/KFTV
 
   host: 127.0.0.1:3306
-  datasource: root:overlord@(127.0.0.1:3306)/musicplay
+  datasource: root:overlord@(127.0.0.1:3306)/musicplay?parseTime=True
 fileServer:
   host: 127.0.0.1:8081
