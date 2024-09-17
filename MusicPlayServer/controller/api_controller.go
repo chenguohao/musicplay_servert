@@ -124,7 +124,7 @@ func RequestUpdatePlaylist(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
+		"message": "update successful",
 		"data":    "",
 		"code":    0,
 	})

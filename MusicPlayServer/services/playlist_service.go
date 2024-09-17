@@ -15,7 +15,7 @@ type CreatePlaylistRequest struct {
 }
 
 type DeletePlaylistRequest struct {
-	PlaylistID int64 `json:"playlistID" binding:"required"`
+	PlaylistID int64 `json:"playlist_id" binding:"required"`
 }
 
 func CreatePlaylist(req CreatePlaylistRequest) error {
@@ -56,9 +56,9 @@ func GetPlayList(page int, size int, curUid int64) ([]dao.PlaylistModelWithUser,
 
 type UpdatePlaylistRequest struct {
 	Title      string        `json:"title" binding:"required"`
-	CoverURL   string        `json:"cover"`
-	ListItem   []interface{} `json:"playlist" binding:"required"` // 假设这是一个数组，可以根据实际情况调整类型
-	PlaylistID int64         `json:"playlistID" binding:"required"`
+	CoverURL   string        `json:"cover_url"`
+	ListItem   []interface{} `json:"list_item" binding:"required"`
+	PlaylistID int64         `json:"playlist_id" binding:"required"`
 }
 
 func UpdatePlaylist(req UpdatePlaylistRequest) error {

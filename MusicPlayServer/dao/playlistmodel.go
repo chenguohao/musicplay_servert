@@ -35,6 +35,18 @@ type PlaylistModelWithUser struct {
 	IsLiked   bool            `json:"is_liked"`
 }
 
+func (m PlaylistModelWithUser) MarshalJSON() ([]byte, error) {
+	type Alias PlaylistModelWithUser // 创建一个匿名的别名结构体，避免递归调用
+
+	return json.Marshal(&struct {
+		Alias
+		CreatedAt int64 `json:"created_at"` // 将 CreatedAt 转换为 int64
+	}{
+		Alias:     (Alias)(m),
+		CreatedAt: m.CreatedAt.Unix(), // 使用 Unix() 方法将时间转换为 Unix 时间戳
+	})
+}
+
 func (PlaylistModelWithUser) TableName() string {
 	return "playlist"
 }
@@ -80,7 +92,7 @@ func GetPlaylistsByPage2(page int, pageSize int) ([]PlaylistModel, error) {
 // UpdatePlaylistByID updates a playlist by its ID
 func UpdatePlaylistByID(id int64, updatedPlaylist PlaylistModel) error {
 	// 指定允许更新的字段
-	err := DBClient.Model(&PlaylistModel{}).Where("id = ?", id).Updates(map[string]interface{}{
+	err := DBClient.Model(&PlaylistModel{}).Where("playlist_id = ?", id).Updates(map[string]interface{}{
 		"title":     updatedPlaylist.Title,
 		"cover_url": updatedPlaylist.CoverURL,
 		"list_item": updatedPlaylist.ListItem,
