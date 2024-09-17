@@ -105,7 +105,7 @@ func UpdatePlaylistByID(id int64, updatedPlaylist PlaylistModel) error {
 
 // DeletePlaylistByID deletes a playlist by its ID
 func DeletePlaylistByID(id int64) error {
-	err := DBClient.Where("id = ?", id).Delete(&PlaylistModel{}).Error
+	err := DBClient.Where("playlist_id = ?", id).Delete(&PlaylistModel{}).Error
 	if err != nil {
 		return err
 	}
