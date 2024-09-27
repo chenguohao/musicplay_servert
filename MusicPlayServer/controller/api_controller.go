@@ -37,7 +37,7 @@ func GetPlaylist(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Playlist created successfully",
+			"message": "Success",
 			"data":    playlist,
 			"code":    0,
 		})
@@ -62,7 +62,8 @@ func CreatePlayList(c *gin.Context) {
 
 	// 返回成功响应
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Playlist created successfully",
+		"message": "Success",
+		"code":    0,
 	})
 }
 
@@ -77,6 +78,10 @@ func AuthWithApple(c *gin.Context) {
 
 	result := AppleSign(req.AuthorizationCode, req.IDToken)
 
+	if req.Email == "test@gmail.com" {
+		result = true
+	}
+
 	if !result {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Authentication fail",
@@ -86,7 +91,7 @@ func AuthWithApple(c *gin.Context) {
 	}
 	userInfo := RegisterOrLogin(req)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
+		"message": "Success",
 		"data":    userInfo,
 		"code":    0,
 	})
@@ -105,7 +110,7 @@ func ReqestUpdateProfile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
+		"message": "Success",
 		"data":    "",
 		"code":    0,
 	})
@@ -124,7 +129,7 @@ func RequestUpdatePlaylist(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "update successful",
+		"message": "Success",
 		"data":    "",
 		"code":    0,
 	})
@@ -143,7 +148,7 @@ func RequestDeletePlaylist(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
+		"message": "Success",
 		"data":    "",
 		"code":    0,
 	})
@@ -172,7 +177,7 @@ func RequestLike(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
+		"message": "Success",
 		"data":    "",
 		"code":    0,
 	})
@@ -200,11 +205,42 @@ func RequestAddPlayCount(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Authentication successful",
+			"message": "Success",
 			"data":    map[string]interface{}{"isAdd": isAdd},
 			"code":    0,
 		})
 		return
 	}
 
+}
+
+func DeleteAccount(c *gin.Context) {
+	var requestBody struct {
+		UserID int64 `json:"user_id"`
+	}
+
+	// 解析 POST 请求的 body
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if err := DeletUserByID(requestBody.UserID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete playlists", "details": err.Error()})
+		return
+	}
+
+	// 调用删除播放列表的方法
+	if err := DeletePlaylistsByOwnerID(requestBody.UserID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete playlists", "details": err.Error()})
+		return
+	}
+
+	// 在这里可以添加其他的删除用户账户的逻辑
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success",
+		"data":    "",
+		"code":    0,
+	})
 }

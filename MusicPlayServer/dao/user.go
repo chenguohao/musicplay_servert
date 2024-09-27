@@ -34,6 +34,14 @@ func AddUser(user UserModel) error {
 	return nil
 }
 
+func DeleteUserByID(userID int64) error {
+	err := DBClient.Where("uid = ?", userID).Delete(&UserModel{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // 根据UID查询用户
 func GetUserByUID(uid int) (*UserModel, error) {
 	var user UserModel

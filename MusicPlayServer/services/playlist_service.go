@@ -35,7 +35,7 @@ func CreatePlaylist(req CreatePlaylistRequest) error {
 	playlist.PlaylistID = generateUUID() // 你可以使用任何合适的 UUID 生成方法
 
 	// 调用 AddPlaylist 将数据存入数据库
-	err = dao.AddPlaylist(playlist)
+	err = dao.AddNewPlaylist(playlist)
 	return err
 }
 
@@ -50,7 +50,7 @@ type GetPlaylistRequest struct {
 }
 
 func GetPlayList(page int, size int, curUid int64) ([]dao.PlaylistModelWithUser, error) {
-	dao.GetAll()
+
 	return dao.GetPlaylistsByPage(page, size, curUid)
 }
 
@@ -83,4 +83,12 @@ type AddPlayCountRequest struct { // 假设这是一个数组，可以根据实�
 func AddPlayCount(req AddPlayCountRequest, curUserID int64) (bool, error) {
 	play := dao.PlayCountModel{}
 	return play.Add(curUserID, req.PlaylistID)
+}
+
+func DeletUserByID(userID int64) error {
+	return dao.DeleteUserByID(userID)
+}
+
+func DeletePlaylistsByOwnerID(userID int64) error {
+	return dao.DeletePlaylistsByOwnerID(userID)
 }

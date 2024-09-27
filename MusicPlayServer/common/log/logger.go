@@ -2,7 +2,6 @@ package log
 
 import (
 	"MusicPlayServer/common"
-	"MusicPlayServer/common/config"
 	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -15,7 +14,7 @@ var (
 	stdlog *log.Logger
 )
 
-func InitLog(cfg *config.Config, options ...LogOptions) error {
+func InitLog(cfg *common.Config, options ...LogOptions) error {
 	var err error
 
 	config := DefaultLogOptions

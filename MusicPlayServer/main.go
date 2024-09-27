@@ -2,15 +2,17 @@ package main
 
 import (
 	"MusicPlayServer/common"
-	"MusicPlayServer/common/config"
 	"MusicPlayServer/common/log"
 	"MusicPlayServer/dao"
 	"MusicPlayServer/http"
+	_ "embed"
 	"flag"
 	"fmt"
 	"os"
 )
 
+//go:embed common/conf/config.yml
+var configFile []byte
 var envMode string
 var ServerVersion = "1.0.01"
 
@@ -24,17 +26,17 @@ func main() {
 	fmt.Printf("============== %s ===============\n", ServerVersion)
 	fmt.Printf("run mode: %s \n", envMode)
 
-	err := config.LoadConfig(envMode)
+	err := common.LoadConfig(envMode)
 	if err != nil {
 		os.Exit(1)
 	}
 
-	err = log.InitLog(&config.ServerConfig)
+	err = log.InitLog(&common.ServerConfig)
 	if err != nil {
 		os.Exit(1)
 	}
 
-	dbClient, err := dao.InitDB(&config.ServerConfig)
+	dbClient, err := dao.InitDB(&common.ServerConfig)
 	if err != nil {
 		os.Exit(1)
 	}

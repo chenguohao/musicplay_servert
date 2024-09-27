@@ -35,6 +35,7 @@ func StartHttpServer() {
 		v1group.POST("/deletePlaylist", RequestDeletePlaylist)
 		v1group.POST("/like", RequestLike)
 		v1group.POST("/addPlayCount", RequestAddPlayCount)
+		v1group.POST("/deleteAccount", DeleteAccount)
 	}
 
 	router.Run(":8011")

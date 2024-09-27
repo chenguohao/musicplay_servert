@@ -18,8 +18,18 @@ func (PlaylistModel) TableName() string {
 }
 
 // AddPlaylist adds a new playlist to the database
-func AddPlaylist(playlist PlaylistModel) error {
+func AddNewPlaylist(playlist PlaylistModel) error {
 	err := DBClient.Create(&playlist).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeletePlaylistsByOwnerID deletes all playlists belonging to the specified OwnerID
+func DeletePlaylistsByOwnerID(ownerID int64) error {
+	// 使用 DELETE 语句删除与指定 OwnerID 相关的所有播放列表
+	err := DBClient.Where("owner_id = ?", ownerID).Delete(&PlaylistModel{}).Error
 	if err != nil {
 		return err
 	}
@@ -64,6 +74,7 @@ func GetPlaylistsByPage(page int, pageSize int, currentUserID int64) ([]Playlist
 			"(SELECT COUNT(*) FROM likecount WHERE likecount.target = playlist.playlist_id and likecount.is_enable != 0 ) as like_count,"+
 			"(SELECT COUNT(*) FROM playcount WHERE playcount.target = playlist.playlist_id) as play_count,"+
 			"(SELECT COUNT(*) > 0 FROM likecount WHERE likecount.target = playlist.playlist_id AND likecount.sender = ? AND likecount.is_enable != 0) as is_liked", currentUserID). // 判断当前用户是否点赞 ).
+		Order("playlist.created_at DESC").
 		Offset(offset).
 		Limit(pageSize).
 		Find(&playlists).Error

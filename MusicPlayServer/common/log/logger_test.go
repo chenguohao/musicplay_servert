@@ -2,11 +2,10 @@ package log
 
 import (
 	"MusicPlayServer/common"
-	"MusicPlayServer/common/config"
 	"testing"
 )
 
-var cfg = config.Config{
+var cfg = common.Config{
 	Mode: common.ModeDebug,
 }
 

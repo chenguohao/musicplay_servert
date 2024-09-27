@@ -4,4 +4,5 @@ log:
   output: /data/logs
 
 mysql:
-  datasource: root:root/root
+  host: 127.0.0.1:3306
+  datasource: root:musicplayer21@(127.0.0.1:3306)/musicplay?parseTime=True

@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"MusicPlayServer/common/config"
+	"MusicPlayServer/common"
 	"MusicPlayServer/common/log"
 	"errors"
 	"fmt"
@@ -17,7 +17,7 @@ type Model struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func InitDB(cfg *config.Config) (*gorm.DB, error) {
+func InitDB(cfg *common.Config) (*gorm.DB, error) {
 
 	datasource := cfg.Mysql.DataSource
 	if len(datasource) == 0 {
@@ -36,7 +36,7 @@ func InitDB(cfg *config.Config) (*gorm.DB, error) {
 	}), &gorm.Config{})
 
 	//db.AutoMigrate(&TUser{}, &Post{})
-	db.AutoMigrate(&PlayCountModel{})
+	//db.AutoMigrate(&PlayCountModel{})
 	if err != nil {
 		panic("failed to connect database")
 	}
